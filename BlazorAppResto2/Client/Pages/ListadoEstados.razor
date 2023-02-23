@@ -1,0 +1,51 @@
+﻿@page "/listadoEstados";
+@inject IEstadoProductoService EPservice;
+
+@inject NavigationManager NavigationManager;
+
+<h3>Estados</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Descripcion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in EPservice.EstadoProductos)
+       {
+           <tr>
+               <td>@item.Id.ToString()</td>
+               <td>@item.NombreEstado</td>
+               <td>
+                   <button class="btn btn-primary" @onclick="(()=>ShowEstado(item.Id))">
+                       <i class="oi oi-pencil"></i>
+
+                   </button>
+                   <button class="btn btn-dark">
+                       <i class="oi oi-delete"></i>
+                   </button>
+               </td>             
+               
+           </tr>
+       }
+    </tbody>
+</table>
+
+<button class="btn btn-info" @onclick="(()=>ShowEstado(null))">Crear nuevo ESTADO</button>
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        await EPservice.GetEstadoProducto();
+    }
+
+    
+
+    private async void ShowEstado(int? id)
+    {
+        NavigationManager.NavigateTo($"/estado/{id}");
+    }
+}

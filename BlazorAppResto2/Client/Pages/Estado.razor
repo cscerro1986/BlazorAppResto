@@ -1,0 +1,83 @@
+﻿@page "/estado";
+@page "/estado/{id:int}";
+
+@inject IEstadoProductoService EPservice;
+
+<h3>Estado</h3>
+
+@if (Id ==null)
+{
+    
+    <h2>Create new ESTADO</h2>
+}
+else
+{
+    <h2>Update ESTADO: @esta.NombreEstado</h2>
+}
+
+<EditForm Model=esta OnSubmit="HandleSubmit">
+    <div>
+        <label for="identificacion">#</label>
+        <input id="identificacion" class="form-control" readonly value="@esta.Id"/>
+    </div>
+    <div>
+        <label for="descripcion"> Descripcion</label>
+        <input id="descripcion" class="form-control" @bind-value="esta.NombreEstado"/>
+    </div>
+    <div>
+    <button type="submit" class="btn btn-primary m-2">@btnText</button>
+    @if(Id!=null)
+        {
+            <button class="btn btn-primary m-2" @onclick=DeleteEstado>Eliminar Estadooo</button>        
+        }
+    
+    </div>
+</EditForm>
+
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    public List<EstadoProducto> lista = new List<EstadoProducto>();
+
+    string btnText = string.Empty;
+    EstadoProducto esta = new EstadoProducto ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EPservice.GetEstadoProducto();
+        lista = EPservice.EstadoProductos;
+
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Id==null)
+        {
+            btnText = "Create Estado";
+        }
+        else
+        {            
+            btnText = "Update Estado";
+            esta = await EPservice.GetEstadoProductoById((int)Id);
+        }
+    }
+
+    async Task HandleSubmit()
+    {
+        if (Id == null)
+        {
+            await EPservice.CreateEstadoProducto(esta);
+        }
+        else
+        {
+            await EPservice.UpdateEstadoProducto((int)Id, esta);
+        }
+    }
+    async Task DeleteEstado()
+    {
+        await EPservice.DeleteEstadoProducto((int)Id);
+    }
+
+}

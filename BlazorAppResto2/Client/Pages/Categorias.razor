@@ -1,0 +1,43 @@
+﻿@page "/categoriaPage"
+@page "/categoriaPage/{id:int}"
+@inject ICategoriaProductoService CPService;
+@inject IEstadoProductoService EPService;
+
+<h3>CategoriaPage</h3>
+<div class="container">
+    <div class="row">
+            <div class="col-md-6">
+             <EditForm Model="categoria">
+                <div class="form-group">
+                    <label for="nombre" class="form-control"> Nombre de Categoria</label>
+                    <input id="nombre"/>
+                </div>
+                <div class="form-group">
+                    <label > Estado de la categoria</label>
+                    <InputSelect @bind-Value="categoria.EstadoProductoId" class="form-select">
+                         @foreach (var estado in CPService.estadoProductos)
+                        {
+                            <option value="@estado.Id">@estado.NombreEstado</option>
+                        }
+                    </InputSelect>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public int? Id { get; set; }
+    public List<EstadoProducto> estadoss = new List<EstadoProducto>();
+
+    public CategoriaProducto categoria = new CategoriaProducto { EstadoProducto= new EstadoProducto() };
+
+    protected async override Task  OnInitializedAsync()
+    {
+        await CPService.GetCategoriaProducto();
+        await CPService.GetEstado();
+    }   
+
+}

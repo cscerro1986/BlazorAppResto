@@ -1,0 +1,45 @@
+﻿@page "/categorias"
+@inject NavigationManager _navigationManager
+@inject ICategoriaProductoService CPService
+
+<h3>Categorias</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in CPService.categoriaProductos)
+       {
+           <tr>
+               <td>@item.Id</td>
+               <td>@item.NombreCategoria</td>
+               <td>@item.EstadoProducto.NombreEstado</td>
+               <td>
+                   <button class="btn btn-primary" @onclick="(()=>ShowCategoria(item.Id))">
+                       <i class="oi oi-pencil"></i>
+
+                   </button>
+               </td>
+
+
+           </tr>
+       }
+    </tbody>
+</table>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await CPService.GetCategoriaProducto();
+    }
+
+    private async void ShowCategoria(int id)
+    {
+         _navigationManager.NavigateTo($"/categoriaPage/{id}");
+    }
+}
