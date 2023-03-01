@@ -1,5 +1,103 @@
-﻿<h3>Productos</h3>
+﻿@page "/producto";
+@page "/producto/{id:int}";
+@inject IProductosService productoService;
+
+<h3>Productos</h3>
+<h2>@text</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+<form class="border-1 p-4">
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" value=@p1.NombreProducto >
+      </div>
+
+      <div class="form-group">
+        <label for="precio">Precio:</label>
+        <input type="number" class="form-control" id="precio" name="precio" value=@p1.Importe>
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock:</label>
+        <input type="number" class="form-control" id="stock" name="stock" value=@p1.Stock>
+      </div>
+
+      <div class="form-group">
+        <label for="categoria">Categoría:</label>
+        <select class="form-control" id="categoria" name="categoria">
+
+            @foreach (var item in productoService.Categorias)
+           {
+                if(p1.CategoriaProductoId==item.Id)
+                {
+                    <option value=@item.Id selected>@item.NombreCategoria</option>
+                }
+                else
+                {
+                    <option value=@item.Id>@item.NombreCategoria</option>
+                }
+           }
+         
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="estado">Estado:</label>
+        <select class="form-control" id="estado" name="estado">
+            @foreach (var estado in productoService.Estados)
+           {
+                if(p1.EstadoProductoId==estado.Id)
+                {
+                    <option value=@estado.Id selected>@estado.NombreEstado</option>
+                }
+                else
+                {
+                    <option value=@estado.Id>@estado.NombreEstado</option>
+                }
+           }
+
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+
+
+        </div>
+    </div>
+</div>
+
 
 @code {
+
+    [Parameter]
+    public int? Id { get; set; }
+    public string text = string.Empty;
+    public Producto p1 = new Producto { CategoriaProducto = new CategoriaProducto(), EstadoProducto = new EstadoProducto() };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await productoService.GetEstadoProducto();
+        await productoService.GetCategoriaProducto();
+        await productoService.GetProductos();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Id==null)
+        {
+            text = "Create new Producto";
+        }
+        else
+        {
+            p1 = await productoService.GetProductoById((int)Id);
+            text = $"Edit Producto: {p1.NombreProducto}";
+
+        }
+    }
+
+    
 
 }

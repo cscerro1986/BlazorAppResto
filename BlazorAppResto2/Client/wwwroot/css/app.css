@@ -1,5 +1,7 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -62,3 +64,51 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+
+#imagen-container {
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+
+#imagen-lista {
+    display: inline-block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.formatoCategoria {
+    display: flex;
+    justify-content: center;
+}
+
+.formatoProducto
+{
+}
+
+.navbuttons {
+    display: inline-block;
+    overflow: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    margin: 0 0 1em;
+    white-space: nowrap;
+    background: #AAA;
+}
+
+    .navbuttons LI {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+.botonCategoria {
+    border: solid;
+    border-radius: 15px;
+}
+
+@media screen and (max-width: 992px)
+.products .items, .products .items.orderingDisabled {
+    grid-template-columns: 1fr;
+}

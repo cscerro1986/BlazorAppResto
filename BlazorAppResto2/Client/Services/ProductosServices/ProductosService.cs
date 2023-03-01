@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BlazorAppResto2.Client.Services.ProductosServices
 {
@@ -24,6 +26,7 @@ namespace BlazorAppResto2.Client.Services.ProductosServices
         {
             var results = await _httpClient.GetFromJsonAsync<List<Producto>>("api/Producto");
                 if(results!=null) Productos= results;
+
         }
         public async Task GetCategoriaProducto()
         {
@@ -39,8 +42,15 @@ namespace BlazorAppResto2.Client.Services.ProductosServices
         
         public async Task<Producto> GetProductoById(int id)
         {
-            var results = await _httpClient.GetFromJsonAsync<Producto>($"api/Producto/{id}");
-            if (results!=null) return results;
+            await GetProductos();
+            Producto p1 = Productos.FirstOrDefault(p => p.Id == id);
+
+            Console.WriteLine(p1.NombreProducto);
+            return p1;
+            //var results = await _httpClient.GetFromJsonAsync<Producto>($"api/Producto/{id}");
+            //    if (results!=null) return results;
+
+
 
             throw new Exception("Producto no encontrado!!!");
         }

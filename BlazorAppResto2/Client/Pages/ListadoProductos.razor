@@ -1,5 +1,50 @@
-﻿<h3>ListadoProductos</h3>
+﻿@page "/listaProductos";
+@inject IProductosService productoService;
+@inject IEstadoProductoService EPService;
+@inject ICategoriaProductoService CPService;
+
+@inject NavigationManager _navigationManager;
+
+<h3>Listado de Productos</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre Producto</th>
+            <th>Stock</th>
+            <th>Precio</th>
+            <th>Categoria Producto</th>
+            <th>Estado Producto</th>
+            <th>Editar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var producto in productoService.Productos.OrderBy(p=>p.CategoriaProductoId))
+       {
+           <tr>
+               <th>@producto.NombreProducto</th>
+               <th>@producto.Stock</th>
+               <th>@producto.Importe</th>
+               <th>@producto.CategoriaProducto.NombreCategoria</th>
+               <th>@producto.EstadoProducto.NombreEstado</th>
+               <th>
+                   <button class="btn btn-info" @onclick="(()=>ShowProducto(producto.Id))">Editar</button>
+               </th>
+           </tr>
+       }
+    </tbody>
+</table>
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        await CPService.GetCategoriaProducto();
+        await productoService.GetProductos();
+        await EPService.GetEstadoProducto();
+    }
 
+    private async void ShowProducto(int? id)
+    {
+        _navigationManager.NavigateTo($"/producto/{id}");   
+    }
 }

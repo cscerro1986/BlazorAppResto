@@ -1,0 +1,58 @@
+﻿@page "/pedido"
+@layout EmptyLayout;
+@inject IProductosService productosService;
+
+<h3>Pedido</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+           <div class="nav">
+                <ul class="navbuttons">
+                    @foreach (var cate in productosService.Categorias)
+                   {
+                       <li><button class ="btn border:solid; border-radius:15px;"> @cate.NombreCategoria</button></li>
+                   }
+                </ul>
+            </div>
+
+            <div class="segundaParte">
+
+                <table class="table">
+                    <tbody>
+
+                    @foreach (var categoria in productosService.Categorias)
+                    {
+                        <tr>
+                            <th colspan=2 class="formatoCategoria">@categoria.NombreCategoria</th>
+                        </tr>
+                        @foreach (var producto in productosService.Productos)
+                       {
+                            if(producto.CategoriaProductoId==categoria.Id)
+                            {
+                                <tr class="formatoProducto">
+                                    <td>@producto.NombreProducto</td>
+                                    <td>@producto.Importe</td>
+                                </tr>
+                            }
+                        }
+
+                    }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        await productosService.GetProductos();
+        await productosService.GetCategoriaProducto();
+        await productosService.GetEstadoProducto();
+    }
+
+}
