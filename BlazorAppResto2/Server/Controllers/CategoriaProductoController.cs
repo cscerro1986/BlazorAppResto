@@ -23,7 +23,6 @@ namespace BlazorAppResto2.Server.Controllers
         public async Task<ActionResult<List<CategoriaProducto>>> GetAllCategorias()
         {
             var lista = await _dataContext.categoriaProductos
-                .Include(e=>e.EstadoProducto)
                 .ToListAsync();
             if (lista.Any()) return Ok(lista);
 
@@ -31,10 +30,9 @@ namespace BlazorAppResto2.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoriaProducto>> GetCategoriaProducto(int id)
+        public async Task<ActionResult<CategoriaProducto>> GetCategoriaProductoByID(int id)
         {
             var categoria = await _dataContext.categoriaProductos
-                .Include(cat=>cat.EstadoProducto)
                 .Where(cat=> cat.Id == id)
                 .FirstOrDefaultAsync();
 
@@ -50,25 +48,32 @@ namespace BlazorAppResto2.Server.Controllers
 
             await _dataContext.categoriaProductos.AddAsync(categoriaProducto);
             await _dataContext.SaveChangesAsync();  
-            return Ok(GetCategoriaProductoDB());
+            return Ok(await GetCategoriaProductoDB());
         }
 
         [HttpPost("{id}")]
-        public async Task<ActionResult<CategoriaProducto>> UpdateCategoriaProducto(int id, CategoriaProducto categoriaProducto)
+        public async Task<ActionResult<List<CategoriaProducto>>> UpdateCategoriaProducto(int id, CategoriaProducto categoriaProducto)
         {
-            if (categoriaProducto == null) return BadRequest();
+            //if (categoriaProducto == null) return BadRequest();
 
             var cat = await _dataContext.categoriaProductos
                         .Where(cat=> cat.Id==id)
                         .FirstOrDefaultAsync();
 
             if(cat == null) return NotFound();
-
-            cat.NombreCategoria = categoriaProducto.NombreCategoria;
-
-            await _dataContext.SaveChangesAsync();
-            return Ok(GetCategoriaProductoDB());
-
+            else
+            {
+                try
+                {
+                    cat.NombreCategoria = categoriaProducto.NombreCategoria;
+                    await _dataContext.SaveChangesAsync();
+                    return Ok(await GetCategoriaProductoDB());
+                }
+                catch (Exception)
+                {
+                    return StatusCode(407);
+                }
+            }
         }
 
         [HttpDelete("{id}")]
@@ -83,7 +88,7 @@ namespace BlazorAppResto2.Server.Controllers
             _dataContext.categoriaProductos.Remove(cat);
             await _dataContext.SaveChangesAsync();
 
-            return Ok(GetCategoriaProductoDB());
+            return Ok(await GetCategoriaProductoDB());
         }
     }
 }

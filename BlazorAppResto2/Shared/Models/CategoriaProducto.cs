@@ -11,9 +11,7 @@ namespace BlazorAppResto2.Shared.Models
     {
         [Key]
         public int Id { get; set; }
-        public string NombreCategoria { get; set; }
-        public EstadoProducto? EstadoProducto { get; set; }
-        public int EstadoProductoId { get; set; }
+        public string NombreCategoria { get; set; }= String.Empty;
 
     }
 }

@@ -7,23 +7,20 @@
 <div class="container">
     <div class="row">
             <div class="col-md-6">
-             <EditForm Model="categoria">
-                <div class="form-group">
-                    <label for="nombre" class="form-control"> Nombre de Categoria</label>
-                    <input id="nombre"/>
-                </div>
-                <div class="form-group">
-                    <label > Estado de la categoria</label>
-                    <InputSelect @bind-Value="categoria.EstadoProductoId" class="form-select">
-                         @foreach (var estado in CPService.estadoProductos)
-                        {
-                            <option value="@estado.Id">@estado.NombreEstado</option>
-                        }
-                    </InputSelect>
-                </div>
-            </EditForm>
-        </div>
-    </div>
+                 <EditForm Model="categoria" OnSubmit="HandleSubmit">
+                    <div class="form-group">
+                        <label for="nombre" class="form-control"> Nombre de Categoria</label>
+                        <input id="nombre" @bind-value="categoria.NombreCategoria" />
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary m-2">@btnText</button>
+                    @if(Id!=null)
+                    {
+                        <button class="btn btn-primary m-2" @onclick=DeleteCategoria>Eliminar Categoria</button>        
+                    }
+                 </EditForm>
+            </div>
+     </div>
 </div>
 
 @code {
@@ -32,12 +29,43 @@
     public int? Id { get; set; }
     public List<EstadoProducto> estadoss = new List<EstadoProducto>();
 
-    public CategoriaProducto categoria = new CategoriaProducto { EstadoProducto= new EstadoProducto() };
+    string btnText = String.Empty;
+
+    public CategoriaProducto categoria = new CategoriaProducto();
 
     protected async override Task  OnInitializedAsync()
     {
         await CPService.GetCategoriaProducto();
-        await CPService.GetEstado();
     }   
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Id==null)
+        {
+            btnText = "Create Categoria";
+        }
+        else
+        {            
+            btnText = "Update Categoria";
+            categoria = await CPService.GetCategoriaProductoByID((int)Id);
+        }
+    }
 
+    async Task HandleSubmit()
+    {
+        if (Id == null)
+        {
+            await CPService.CreateCategoriaProducto(categoria);
+        }
+        else
+        {
+            await CPService.CreateCategoriaProducto(categoria);
+        }
+    }
+    async Task DeleteCategoria()
+    {
+        if(Id!= null)
+        {
+            await CPService.DeleteCategoriaProducto((int)Id);            
+        }
+    }
 }

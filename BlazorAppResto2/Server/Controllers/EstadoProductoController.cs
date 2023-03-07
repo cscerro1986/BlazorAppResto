@@ -50,17 +50,26 @@ namespace BlazorAppResto2.Server.Controllers
         [HttpPost ("{id}")]
         public async Task<ActionResult<List<EstadoProducto>>> UpdateEstadoProducto(int id, EstadoProducto estadoProducto)
         {
-            var estadoProductoDB = await _context.estadoProductos
-                                        .FirstOrDefaultAsync(ep => ep.Id == id);
+           var estadoProductoDB = await _context.estadoProductos
+                                    .Where(esta => esta.Id == id)
+                                    .FirstOrDefaultAsync();
+
             if(estadoProductoDB ==null)
             {
-                return NotFound("No se pudo");
+                    return NotFound("No se pudo");
             }
             else
             {
-                estadoProductoDB.NombreEstado = estadoProducto.NombreEstado;
-                await _context.SaveChangesAsync();
-                return Ok(await GetEstadoProductoDB());
+                try
+                {
+                    estadoProductoDB.NombreEstado = estadoProducto.NombreEstado;
+                    await _context.SaveChangesAsync();
+                    return Ok(await GetEstadoProductoDB());
+                }
+                catch (Exception)
+                {
+                    return StatusCode(407);
+                }
             }                                        
         }
 
@@ -73,7 +82,7 @@ namespace BlazorAppResto2.Server.Controllers
             _context.estadoProductos.Remove(estadoProductoDB);
             await _context.SaveChangesAsync();
 
-            return Ok(GetEstadoProductoDB());
+            return Ok(await GetEstadoProductoDB());
         }
 
     }

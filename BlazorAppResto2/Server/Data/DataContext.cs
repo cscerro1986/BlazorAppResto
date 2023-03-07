@@ -7,8 +7,6 @@ namespace BlazorAppResto2.Server.Data
         {
 
         }
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EstadoProducto>().HasData(
@@ -33,26 +31,22 @@ namespace BlazorAppResto2.Server.Data
                 new CategoriaProducto
                 {
                     Id = 1,
-                    NombreCategoria = "Bebidas",
-                    EstadoProductoId = 1
+                    NombreCategoria = "Bebidas"
                 },
                 new CategoriaProducto
                 {
                     Id = 2,
-                    NombreCategoria = "Hamburguesas",
-                    EstadoProductoId = 1
+                    NombreCategoria = "Hamburguesas"
                 },
                 new CategoriaProducto
                 {
                     Id = 3,
-                    NombreCategoria = "Pastas",
-                    EstadoProductoId = 1
+                    NombreCategoria = "Pastas"
                 },
                 new CategoriaProducto
                 {
                     Id = 4,
-                    NombreCategoria = "Postres",
-                    EstadoProductoId = 2
+                    NombreCategoria = "Postres"
                 }
             );
 

@@ -7,11 +7,24 @@
 namespace BlazorAppResto2.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "categoriaProductos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreCategoria = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_categoriaProductos", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "estadoProductos",
                 columns: table => new
@@ -23,26 +36,6 @@ namespace BlazorAppResto2.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_estadoProductos", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "categoriaProductos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreCategoria = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EstadoProductoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_categoriaProductos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_categoriaProductos_estadoProductos_EstadoProductoId",
-                        column: x => x.EstadoProductoId,
-                        principalTable: "estadoProductos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,13 +58,24 @@ namespace BlazorAppResto2.Server.Migrations
                         column: x => x.CategoriaProductoId,
                         principalTable: "categoriaProductos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_productos_estadoProductos_EstadoProductoId",
                         column: x => x.EstadoProductoId,
                         principalTable: "estadoProductos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "categoriaProductos",
+                columns: new[] { "Id", "NombreCategoria" },
+                values: new object[,]
+                {
+                    { 1, "Bebidas" },
+                    { 2, "Hamburguesas" },
+                    { 3, "Pastas" },
+                    { 4, "Postres" }
                 });
 
             migrationBuilder.InsertData(
@@ -82,17 +86,6 @@ namespace BlazorAppResto2.Server.Migrations
                     { 1, "Vigente" },
                     { 2, "Discontinuado" },
                     { 3, "Sin Stock" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "categoriaProductos",
-                columns: new[] { "Id", "EstadoProductoId", "NombreCategoria" },
-                values: new object[,]
-                {
-                    { 1, 1, "Bebidas" },
-                    { 2, 1, "Hamburguesas" },
-                    { 3, 1, "Pastas" },
-                    { 4, 2, "Postres" }
                 });
 
             migrationBuilder.InsertData(
@@ -111,11 +104,6 @@ namespace BlazorAppResto2.Server.Migrations
                     { 9, 2, 2, 2500f, "WTF provoleta y ciruela ", 58 },
                     { 10, 3, 2, 3456f, "Raviolon 4 quesos", 100 }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_categoriaProductos_EstadoProductoId",
-                table: "categoriaProductos",
-                column: "EstadoProductoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_productos_CategoriaProductoId",

@@ -17,8 +17,10 @@ namespace BlazorAppResto2.Client.Services.EstadoProductoService
 
         private async Task SetEstadoProducto(HttpResponseMessage results)
         {
+            Console.WriteLine("Entro al SetEstadoProducto");
             var response = await results.Content.ReadFromJsonAsync<List<EstadoProducto>>();
             EstadoProductos = response;
+            Console.WriteLine("Solo queda ir a /listadoEstados");
             _navigationManager.NavigateTo("/listadoEstados");
 
         }
@@ -43,17 +45,17 @@ namespace BlazorAppResto2.Client.Services.EstadoProductoService
             await SetEstadoProducto(result);
         }
 
+
+        public async Task UpdateEstadoProducto(int id, EstadoProducto estadoProducto)
+        {
+            var results = await _http.PostAsJsonAsync($"api/EstadoProducto/{id}",estadoProducto);
+            await SetEstadoProducto(results);
+        }
+
         public async Task DeleteEstadoProducto(int id)
         {
             var result = await _http.DeleteAsync($"api/EstadoProducto/{id}");
             _navigationManager.NavigateTo("/listadoEstados");
-        }
-
-
-        public async Task UpdateEstadoProducto(int id, EstadoProducto estadoProducto)
-        {
-            var results = await _http.PutAsJsonAsync($"api/EstadoProducto/{id}",estadoProducto);
-            await SetEstadoProducto(results);
         }
     }
 }

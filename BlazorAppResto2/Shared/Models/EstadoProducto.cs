@@ -12,7 +12,7 @@ namespace BlazorAppResto2.Shared.Models
     {
         [Key]
         public int Id { get; set; }
-        public string NombreEstado { get; set; }
+        public string NombreEstado { get; set; } = String.Empty;
 
     }
 }

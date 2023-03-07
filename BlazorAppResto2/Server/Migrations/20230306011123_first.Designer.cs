@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorAppResto2.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230216002118_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230306011123_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,16 +32,11 @@ namespace BlazorAppResto2.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EstadoProductoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("NombreCategoria")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EstadoProductoId");
 
                     b.ToTable("categoriaProductos");
 
@@ -49,25 +44,21 @@ namespace BlazorAppResto2.Server.Migrations
                         new
                         {
                             Id = 1,
-                            EstadoProductoId = 1,
                             NombreCategoria = "Bebidas"
                         },
                         new
                         {
                             Id = 2,
-                            EstadoProductoId = 1,
                             NombreCategoria = "Hamburguesas"
                         },
                         new
                         {
                             Id = 3,
-                            EstadoProductoId = 1,
                             NombreCategoria = "Pastas"
                         },
                         new
                         {
                             Id = 4,
-                            EstadoProductoId = 2,
                             NombreCategoria = "Postres"
                         });
                 });
@@ -229,17 +220,6 @@ namespace BlazorAppResto2.Server.Migrations
                             NombreProducto = "Raviolon 4 quesos",
                             Stock = 100
                         });
-                });
-
-            modelBuilder.Entity("BlazorAppResto2.Shared.Models.CategoriaProducto", b =>
-                {
-                    b.HasOne("BlazorAppResto2.Shared.Models.EstadoProducto", "EstadoProducto")
-                        .WithMany()
-                        .HasForeignKey("EstadoProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EstadoProducto");
                 });
 
             modelBuilder.Entity("BlazorAppResto2.Shared.Models.Producto", b =>

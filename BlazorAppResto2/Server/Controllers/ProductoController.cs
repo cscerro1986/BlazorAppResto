@@ -16,7 +16,10 @@ namespace BlazorAppResto2.Server.Controllers
 
         private async Task <ActionResult<List<Producto>>>GetProductoDB()
         {
-            return await _context.productos.ToListAsync();
+            return await _context.productos
+                .Include(p=>p.CategoriaProducto)
+                .Include(p=>p.EstadoProducto)
+                .ToListAsync();
         }
 
         [HttpGet]
@@ -31,21 +34,6 @@ namespace BlazorAppResto2.Server.Controllers
             if(productos==null) return NotFound();
                 
                 return Ok(productos);
-
-            //var query = from a in _context.productos
-            //            join s in _context.estadoProductos on a.EstadoProductoId equals s.Id
-            //            join c in _context.categoriaProductos on a.CategoriaProductoId equals c.Id
-            //            select new RetornoProducto
-            //            {
-            //                Id = a.Id,
-            //                Name = a.NombreProducto,
-            //                Stock = a.Stock,
-            //                Importe = a.Importe,
-            //                Categoria = c.NombreCategoria,
-            //                Estado = s.NombreEstado
-            //            };
-
-            //            return Ok(query.ToList());  
 
         }
 
@@ -72,7 +60,7 @@ namespace BlazorAppResto2.Server.Controllers
             producto.CategoriaProducto = null;
             var response = await _context.productos.AddAsync(producto);
             await _context.SaveChangesAsync();
-            return Ok(GetProductoDB());
+            return Ok(await GetProductoDB());
         }
 
         [HttpPost("{id}")]
@@ -93,7 +81,7 @@ namespace BlazorAppResto2.Server.Controllers
             prod.CategoriaProductoId = producto.CategoriaProductoId;
             
             await _context.SaveChangesAsync();
-            return Ok(GetProductoDB());
+            return Ok(await GetProductoDB());
 
 
         }
@@ -108,7 +96,7 @@ namespace BlazorAppResto2.Server.Controllers
             _context.productos.Remove(prod);
             await _context.SaveChangesAsync();
 
-            return Ok(GetProductoDB());
+            return Ok(await GetProductoDB());
 
         }
 

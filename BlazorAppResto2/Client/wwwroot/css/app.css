@@ -96,6 +96,7 @@ a, .btn-link {
     margin: 0 0 1em;
     white-space: nowrap;
     background: #AAA;
+    padding-left:0;
 }
 
     .navbuttons LI {
